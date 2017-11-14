@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML5 canvas移动端手机刮刮卡代码 - A5源码</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+<div class="max-width">
+	<p>在这个例子中，当你刮开90%的面积时，回调函数就会被执行。</p>
+	<div class="scratch_container">
+		<div class="scratch_viewport">
+			<canvas id="js-scratch-canvas"></canvas>
+		</div>
+	</div>
+</div>
+
+<script src="js/Scratch.js"></script>
+<script type="text/javascript">
+
+	var scratch = new Scratch({
+		canvasId: 'js-scratch-canvas',
+		imageBackground: './images/win.jpg',
+		pictureOver: './images/foreground.jpg',
+		cursor: {
+			png: './images/piece.png',
+			cur: './images/piece.cur',
+			x: '20',
+			y: '17'
+		},
+		radius: 20,
+		nPoints: 100,
+		percent: 90,
+		callback: function () {
+			alert('I am Callback.');
+		},
+		pointSize: { x: 3, y: 3}
+	});
+
+</script>
+<!-- No javascript -->
+<noscript>
+	<p class="browserupgrade">
+		Votre navigateur ne supporte pas ou &agrave; desactiv&eacute; javascript.
+		<br>
+		L'application ne peut pas fonctionner correctement.
+		<br>
+		Pour acc&eacute;der au site veuillez activer javascript.
+	</p>
+</noscript>
+<!-- No javascript end -->
+
+<div style="text-align:center;">
+<p>来源:<a href="http://down.admin5.com/" target="_blank">A5源码</a></p>
+</div>
+</body>
+</html>

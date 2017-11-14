@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>HTML5 canvas绘制七巧板代码_A5源码</title>
+</head>
+<body>
+<!-- 代码 开始 -->
+<div style="margin:0 auto;width:600px; height:auto;text-align: center;">
+    <canvas id="mycanvas" width="600" height="600" style="display:block;margin:50px auto"></canvas>
+</div>
+
+<script>
+    var c=document.getElementById("mycanvas");
+    var ctx= c.getContext("2d");
+
+//    第一个三角形
+//    开始绘制
+    ctx.beginPath();
+//    绘制的基点
+    ctx.moveTo(0,0);
+//    绘制从前一点到这点的直线
+    ctx.lineTo(300,300);
+    ctx.lineTo(0,600);
+    ctx.closePath();//填充或闭合 需要先闭合路径才能画
+//    空心三角形
+//    ctx.strokeStyle="#FF7900";
+//    ctx.stroke();
+//    实心三角形
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(300,300);
+    ctx.lineTo(0,600);
+    ctx.closePath();//填充或闭合 需要先闭合路径才能画
+//    进行绘图处理
+    ctx.fillStyle = 'rgba(200,0,0,0.5)';
+    ctx.fill();
+
+//    第二个三角形
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(300,0);
+    ctx.lineTo(150,150);
+    ctx.closePath();
+    ctx.fillStyle="rgba(255,121,0,0.5)";
+    ctx.fill();
+
+    //    第三个三角形
+    ctx.beginPath();
+    ctx.moveTo(300,0);
+    ctx.lineTo(600,0);
+    ctx.lineTo(600,300);
+    ctx.closePath();
+    ctx.fillStyle="rgba(255,0,0,0.5)";
+    ctx.fill();
+
+    //    第四个三角形
+    ctx.beginPath();
+    ctx.moveTo(0,600);
+    ctx.lineTo(600,600);
+    ctx.lineTo(300,300);
+    ctx.closePath();
+    ctx.fillStyle="rgba(3,165,72,0.5)";
+    ctx.fill();
+
+    //    第五个三角形
+    ctx.beginPath();
+    ctx.moveTo(300,300);
+    ctx.lineTo(450,150);
+    ctx.lineTo(450,450);
+    ctx.closePath();
+    ctx.fillStyle="rgba(46,180,255,0.5)";
+    ctx.fill();
+
+    //   正方形
+    ctx.beginPath();
+    ctx.moveTo(300,0);
+    ctx.lineTo(450,150);
+    ctx.lineTo(300,300);
+    ctx.lineTo(150,150);
+    ctx.closePath();
+    ctx.fillStyle="rgba(255,245,0,0.5)";
+    ctx.fill();
+
+    //   平行四边形
+    ctx.beginPath();
+    ctx.moveTo(600,600);
+    ctx.lineTo(600,300);
+    ctx.lineTo(450,150);
+    ctx.lineTo(450,450);
+    ctx.closePath();
+    ctx.fillStyle="rgba(129,0,196,0.5)";
+    ctx.fill();
+
+
+
+</script>
+<!-- 代码 结束 -->
+
+<div style="text-align:center;">
+<p>来源:<a href="http://down.admin5.com" target="_blank">A5源码</a></p>
+</div>
+
+
+</body>
+</html>

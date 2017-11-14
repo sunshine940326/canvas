@@ -1,0 +1,42 @@
+/* 代码整理：源码之家 www.mycodes.net */
+html{
+  overflow:hidden;
+}
+body{
+   margin:0px;
+}
+canvas{
+   margin-left:-40px;
+}
+span{
+	 height:7px;
+   width:20px;
+	 display:inline-block;
+	 cursor:pointer;  
+	 position:absolute;
+	 top:0px;
+			 transition: height 0.2s;
+		  -o-transition: height 0.2s;	
+		-moz-transition: height 0.2s;	
+	 -webkit-transition: height 0.2s;	
+
+}
+span:hover{
+	 height:12px;
+}
+#blue{
+  background-color:#367aec;
+  left:30px;
+}
+#purple{
+  background-color:#f727d2;
+  left:50px;
+}
+#black{
+  background-color:#000000;
+  left:70px;
+}
+#container{
+  width:100%;
+  
+}

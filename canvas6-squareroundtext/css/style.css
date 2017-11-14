@@ -1,0 +1,131 @@
+html, body{
+	padding: 0;
+	margin: 0;
+}
+#canvas{
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+body{
+	background-color: #222;
+	font-family: "Helvetica";
+	overflow: hidden;
+}
+#control{
+	position: absolute;
+	left:-250px;
+	top: 0;
+	width: 250px;
+	height: 100%;
+	padding: 30px;
+	box-sizing: border-box;
+	color: #49f;
+	background-color: rgba(0, 0, 0,.5);
+	font-size: 14px;
+	-webkit-transition: all .5s linear;
+	
+}
+#ball, #rect{
+	display: inline-block;
+	width: 80px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	cursor: pointer;
+	border: 1px solid #222;
+	color: #444;
+}
+#ball{
+	border-right:none;
+	margin-right: -5px;
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+	background: orange;
+}
+#rect{
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+
+#control h1{
+	font-size: 30px;
+	padding: 0;
+	color: orange;
+	margin: 10px 0 30px 30px;
+	font-family: "Microsoft Yahei";
+    font-weight: 100;
+}
+#control p{
+	margin-bottom: -10px;
+}
+#control input{
+	border: none;
+	background-color: transparent;
+	margin: 20px 0;
+	outline: none;
+}
+#control input[type="text"]{
+	width: 100%;
+	font-size: 25px;
+	appearance: none;
+	padding-bottom: 5px;
+	border-bottom: 3px solid #ededed;
+	color: #ededed;
+}
+
+#control input[type="range"]{
+	width: 100%;
+	-webkit-appearance: none;
+	background-color: silver;
+	height: 8px;
+}
+#control input[type="range"]::-webkit-slider-thumb{
+	-webkit-appearance: none;
+	background-color: seagreen;
+	width: 10px;
+	height: 20px;
+}
+#control input[type="button"]{
+	padding: 5px;
+	margin: 5px 0;
+	background-color: #ff2948;
+	border: 0px;
+	width: 100%;
+	color: white;
+	font-weight: white;
+}
+
+#btn{
+	position: absolute;
+	top: 20px;
+	right: -40px;
+
+}
+#btn span{
+	display: block;
+	width: 20px;
+	height: 1px;
+	margin-bottom: 4px;
+	border-bottom: 2px solid #fff;
+}
+
+#control.slide{
+	left: 0px;
+	-webkit-transition: left .5s linear;
+}
+
+#tips{
+	position: absolute;
+	bottom: 25%;
+	left: 50%;
+	transform: translateX(-50%);
+	color: rgba(255,255,255,.5);
+	font-size: 13px;
+	font-weight: thin;
+	text-align: center;
+	border-top: 1px solid rgba(255,255,255,.5);
+	padding: 20px 50px;
+}

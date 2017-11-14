@@ -1,0 +1,156 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>通量</title>
+
+<style>
+body {
+  overflow: hidden;
+  margin: 0;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+}
+
+h2 {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-family: 'Josefin Sans', sans-serif;
+  letter-spacing: 4px;
+  opacity: 0.2;
+  font-weight: 300;
+}
+</style>
+</head>
+<body>
+
+<script type="text/javascript" src="js/three.js"></script>
+<script type="text/javascript" src="js/perlin.js"></script>
+
+<canvas></canvas>
+
+<h2>长按任意键</h2>
+
+<script>
+console.clear();
+var renderer = new THREE.WebGLRenderer({
+  canvas: document.querySelector("canvas"),
+  antialias: true
+});
+renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1);
+renderer.setSize(window.innerWidth, window.innerHeight);
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(
+  45,
+  window.innerWidth / window.innerHeight,
+  1,
+  1000
+);
+camera.position.z = 60;
+var length = 30;
+var mouseJump = {
+  x: 0,
+  y: 0
+};
+var offset = 0;
+function Spline() {
+  this.geometry = new THREE.Geometry();
+  this.color = Math.floor(Math.random() * 80 + 180);
+  for (var j = 0; j < 180; j++) {
+    this.geometry.vertices.push(
+      new THREE.Vector3(j / 180 * length * 2 - length, 0, 0)
+    );
+    this.geometry.colors[j] = new THREE.Color(
+      "hsl(" + (j * 0.6 + this.color) + ",70%,70%)"
+    );
+  }
+  this.material = new THREE.LineBasicMaterial({
+    vertexColors: THREE.VertexColors
+  });
+  this.mesh = new THREE.Line(this.geometry, this.material);
+  this.speed = (Math.random() + 0.1) * 0.0002;
+  scene.add(this.mesh);
+}
+var isMouseDown = false;
+var prevA = 0;
+function render(a) {
+  requestAnimationFrame(render);
+  for (var i = 0; i < splines.length; i++) {
+    for (var j = 0; j < splines[i].geometry.vertices.length; j++) {
+      var vector = splines[i].geometry.vertices[j];
+      vector.y =
+        noise.simplex2(j * 0.05 + i - offset, a * splines[i].speed) * 8;
+      vector.z = noise.simplex2(vector.x * 0.05 + i, a * splines[i].speed) * 8;
+
+      vector.y *= 1 - Math.abs(vector.x / length);
+      vector.z *= 1 - Math.abs(vector.x / length);
+    }
+    splines[i].geometry.verticesNeedUpdate = true;
+  }
+  scene.rotation.x = a * 0.0003;
+  if (isMouseDown) {
+    mouseJump.x += 0.001;
+    if (a - prevA > 100) {
+      updateColor();
+      prevA = a;
+    }
+  } else {
+    mouseJump.x -= 0.001;
+  }
+  mouseJump.x = Math.max(0, Math.min(0.07, mouseJump.x));
+  offset += mouseJump.x;
+  renderer.render(scene, camera);
+}
+var splines = [];
+for (var i = 0; i < 12; i++) splines.push(new Spline());
+function onResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+function updateColor() {
+  for (var i = 0; i < splines.length; i++) {
+    var color = Math.abs((splines[i].color - offset * 10) % 360);
+    for (var j = 0; j < splines[i].geometry.vertices.length; j++) {
+      splines[i].mesh.geometry.colors[j] = new THREE.Color(
+        "hsl(" + (j * 0.6 + color) + ",70%,70%)"
+      );
+    }
+    splines[i].mesh.geometry.colorsNeedUpdate = true;
+  }
+}
+function onMouseDown(e) {
+  isMouseDown = true;
+  e.preventDefault();
+  return false;
+}
+function onMouseUp() {
+  isMouseDown = false;
+}
+window.addEventListener("resize", onResize);
+window.addEventListener("keydown", onMouseDown);
+document.body.addEventListener("mousedown", onMouseDown);
+document.body.addEventListener("mouseup", onMouseUp);
+document.body.addEventListener("touchstart", onMouseDown);
+document.body.addEventListener("touchend", onMouseUp);
+requestAnimationFrame(render);
+</script>
+<div style="text-align:center;">
+<p>更多源码：<a href="http://down.admin5.com/" target="_blank">A5源码</a></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTML5 canvas简单五子棋小游戏</title>
+    <meta charset="UTF-8">
+    <style type="text/css">
+    body{
+        margin:0;
+        padding: 0;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="600" height="600" onclick="clickEvent(event)"  ></canvas>
+<button onclick="reStart();">重置</button>
+<button onclick="back();">悔棋</button>
+<div style="text-align:center;">
+<p>来源:<a href="http://down.admin5.com/" target="_blank">A5源码</a></p>
+</div>
+</body>
+<script type="text/javascript">
+var c=document.getElementById("canvas");
+var cxt=c.getContext("2d");
+var data = [];//每次点击的数据
+var clickCount = 0;//点击的次数
+var canvasWidth = 600;//画布大小
+var interval = 20;//间隔
+var isEnd = false;//判断当前局是否结束
+var colorW = '#666';
+var colorH = '#000';
+drw_table();
+function drw_table() {
+    for (var i = 0; i < canvasWidth;) {
+        cxt.beginPath();
+        cxt.lineWidth="1";
+        cxt.strokeStyle="red"; // 红色路径
+        cxt.moveTo(i,0);
+        cxt.lineTo(i,canvasWidth);
+        cxt.stroke(); // 进行绘制
+        cxt.beginPath();
+        cxt.lineWidth="1";
+        cxt.moveTo(0,i);
+        cxt.lineTo(canvasWidth,i);
+        cxt.stroke(); // 进行绘制
+        i = i+interval;
+    }
+}
+function clickEvent(e)
+{
+    if (!isEnd) {
+        x1=e.clientX;
+        y1=e.clientY;
+        for (var i = 0; i < canvasWidth;) {
+            if (x1>=i&&x1<i+interval/2) {
+                x1 = i;
+                break;
+            }
+            if (x1>=i+interval/2&&x1<i+interval) {
+                x1 = i+interval;
+                break;
+            }
+            i = i+interval;
+        }
+        for (var i = 0; i < canvasWidth;) {
+            if (y1>=i&&y1<i+interval/2) {
+                y1 = i;
+                break;
+            }
+            if (y1>=i+interval/2&&y1<i+interval) {
+                y1 = i+interval;
+                break;
+            }
+            i = i+interval;
+        }
+        if (!validateData(x1,y1)) {
+            var isTrue = true;
+            if (clickCount%2==0) {
+                cxt.fillStyle=colorW;
+            }else{
+                cxt.fillStyle=colorH;
+                isTrue = false;
+            }
+            cxt.beginPath();
+            cxt.arc(x1,y1,interval/2,0,Math.PI*2,true);
+            cxt.closePath();
+            cxt.fill();
+            data.push({'x':x1,'y':y1,'isTrue':isTrue});
+            clickCount++;
+            if(isOver(x1,y1,isTrue)){
+                isEnd = true;
+                if (isTrue) {
+                    alert('灰棋赢了');
+                }else{
+                    alert('黑棋赢了');
+                }
+            }
+        }else{
+            // alert("当前点已经存在");
+        }
+    }  
+}
+function reStart() {
+    cxt.clearRect(0,0,canvasWidth,canvasWidth);
+    drw_table();
+    data = [];
+    clickCount=0;
+    isEnd = false;
+}
+function back() {
+    cxt.clearRect(0,0,canvasWidth,canvasWidth);
+    drw_table();
+    clickCount--;
+    data.pop();
+    isEnd = false;
+    for (var i = 0; i < clickCount; i++) {
+        cxt.beginPath();
+        if (i%2==0) {
+            cxt.fillStyle=colorW;
+        }else{
+            cxt.fillStyle=colorH;
+        }
+        cxt.arc(data[i].x,data[i].y,10,0,Math.PI*2,true);
+        cxt.closePath();
+        cxt.fill();
+    }
+}
+//验证是否存在当前点了
+function validateData(x,y){
+    for (var i = 0; i < data.length; i++) {
+        if (data[i].x ==x && data[i].y == y) {
+            return true;
+        }
+    }
+    return false;
+}
+//验证是否存在当前点了
+function validateDataIsTrue(x,y,isTrue){
+    for (var i = 0; i < data.length; i++) {
+        if (data[i].x ==x && data[i].y == y &&data[i].isTrue == isTrue) {
+            return true;
+        }
+    }
+    return false;
+}
+function isOver(x1,y1,isTrue) {
+    x2 = x3 = x4 = x5 = x1;
+    y2 = y3 = y4 = y5 = y1;
+
+    //判断当前点的横向
+    if (x1>=5*interval) {
+        x2 = x1-5*interval;
+    }else{
+        x2 = 0;
+    }
+    lineCount = 0;
+    for (var i = 0; i < 10; i++) {
+        tempx = x2+interval*i;
+        if (validateDataIsTrue(tempx,y2,isTrue)) {
+            lineCount++;
+            if (lineCount==5) {
+                break;
+            };
+        }else{
+            lineCount=0;
+        }
+    }
+    if (lineCount>=5) {
+        return true;
+    }
+    //判断当前点的纵向
+    if (y1>=5*interval) {
+        y3 = y1-5*interval;
+    }else{
+        y3=0;
+    }
+    lineCount = 0;
+    for (var i = 0; i < 10; i++) {
+        tempy = y3+interval*i;
+        if (validateDataIsTrue(x3,tempy,isTrue)) {
+            lineCount++;
+            if (lineCount==5) {
+                break;
+            };
+        }else{
+            lineCount=0;
+        }
+    }
+    if (lineCount>=5) {
+        return true;
+    }
+    //判断当前点的反斜向
+    x4 = x1-5*interval;
+    y4 = y1-5*interval;
+    lineCount = 0;
+    for (var i = 0; i < 10; i++) {
+        tempy = y4+interval*i;
+        tempx = x4+interval*i;
+        if (validateDataIsTrue(tempx,tempy,isTrue)) {
+            lineCount++;
+            if (lineCount==5) {
+                break;
+            };
+        }else{
+            lineCount=0;
+        }
+    }
+    if (lineCount>=5) {
+        return true;
+    }
+    //判断当前点的反斜向
+    x5 = x1-5*interval;
+    y5 = y1+5*interval;
+    lineCount = 0;
+    for (var i = 0; i < 10; i++) {
+        tempy = y5-interval*i;
+        tempx = x5+interval*i;
+        if (validateDataIsTrue(tempx,tempy,isTrue)) {
+            lineCount++;
+            if (lineCount==5) {
+                break;
+            };
+        }else{
+            lineCount=0;
+        }
+    }
+    if (lineCount>=5) {
+        return true;
+    }
+}
+</script>
+</html>

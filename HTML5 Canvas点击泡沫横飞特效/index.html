@@ -1,0 +1,239 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>HTML5 Canvas点击泡沫横飞特效 - A5源码</title>
+
+<style>
+body {
+  background: #3E4777;
+  overflow: hidden;
+  margin: 0;
+}
+
+.instructions {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  letter-spacing: 0.2em;
+  font-size: 18px;
+  color: white;
+}
+</style>
+</head>
+<body>
+
+<script type="text/javascript" src="js/three.min.js"></script>
+<script type="text/javascript" src="js/Stats.min.js"></script>
+
+<canvas id="canvas"></canvas>
+
+<div id="stats"></div>
+
+<div class="instructions">点击页面</div>
+
+<script type="text/javascript">
+(function() {
+  var Particles,
+    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  Particles = (function() {
+    function Particles() {
+      this.render = bind(this.render, this);
+      this.rotateRadians = bind(this.rotateRadians, this);
+      this.random = bind(this.random, this);
+      this.mouseMove = bind(this.mouseMove, this);
+      this.mouseDown = bind(this.mouseDown, this);
+      this.resize = bind(this.resize, this);
+      this.animate = bind(this.animate, this);
+      this.setStage = bind(this.setStage, this);
+      this.setLighting = bind(this.setLighting, this);
+      this.getTexture = bind(this.getTexture, this);
+      this.addStars = bind(this.addStars, this);
+      this.setActors = bind(this.setActors, this);
+      this.getPastelColor = bind(this.getPastelColor, this);
+      this.canvasMouse = {
+        x: 0,
+        y: 0,
+        z: 0,
+        px: 0,
+        py: 0,
+        py: 0,
+        vx: 0,
+        vy: 0,
+        pressed: false
+      };
+      this.colors = ['#da6b00', '#8555d4', '#4ad3b5', '#ffffff'];
+      this.particleCount = 500;
+      this.initialRadius = 0.1;
+      this.movementSpeed = 2;
+      this.directions = [];
+      this.starSystems = [];
+      this.systemCount = 1;
+      this.setStage();
+      this.setLighting();
+      this.setActors();
+      setInterval((function(_this) {
+        return function() {
+          _this.systemCount++;
+          return _this.addStars(_this.getPastelColor(), 0, 0);
+        };
+      })(this), 5000);
+      this.animate();
+      this.render();
+    }
+
+    Particles.prototype.getPastelColor = function() {
+      this.col = new THREE.Color("hsl(" + (this.random(0, 360)) + ", " + (Math.floor(25 + 70 * Math.random())) + "%, " + (Math.floor(85 + 10 * Math.random())) + "%)");
+      return "#" + (this.col.getHexString());
+    };
+
+    Particles.prototype.setActors = function() {
+      return this.addStars(this.getPastelColor(), 0, 0);
+    };
+
+    Particles.prototype.addStars = function(color, x, y) {
+      var angle, i, k, radiusSQ, ref, vertex;
+      this.dirs = [];
+      this.geometry = new THREE.Geometry();
+      this.materials = new THREE.PointsMaterial({
+        color: color,
+        size: 1,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        map: this.getTexture(color),
+        depthTest: false
+      });
+      for (i = k = 0, ref = this.particleCount; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
+        angle = Math.random() * 2 * Math.PI;
+        radiusSQ = Math.random() * this.initialRadius * this.initialRadius;
+        vertex = new THREE.Vector3();
+        vertex.x = x;
+        vertex.y = y;
+        vertex.z = 0;
+        this.dirs.push({
+          x: (Math.random() * this.movementSpeed) - (this.movementSpeed / 2),
+          y: (Math.random() * this.movementSpeed) - (this.movementSpeed / 2),
+          z: (Math.random() * this.movementSpeed) - (this.movementSpeed / 2)
+        });
+        this.geometry.vertices.push(vertex);
+      }
+      this.starSystem = new THREE.Points(this.geometry, this.materials);
+      this.starSystem.sortParticles = true;
+      this.directions.push(this.dirs);
+      this.starSystems.push(this.starSystem);
+      return this.scene.add(this.starSystem);
+    };
+
+    Particles.prototype.getTexture = function(color) {
+      var canvas, context, gradient, texture;
+      canvas = document.createElement('canvas');
+      canvas.width = 32;
+      canvas.height = 32;
+      context = canvas.getContext('2d');
+      gradient = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2);
+      gradient.addColorStop(0, 'rgba(255,255,255,1)');
+      gradient.addColorStop(0.2, color);
+      gradient.addColorStop(0.4, color);
+      gradient.addColorStop(1, 'rgba(0,0,0,1)');
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      texture = new THREE.Texture(canvas);
+      texture.needsUpdate = true;
+      return texture;
+    };
+
+    Particles.prototype.setLighting = function() {
+      this.ambientLight = new THREE.AmbientLight("#ffffff", 0.5);
+      return this.scene.add(this.ambientLight);
+    };
+
+    Particles.prototype.setStage = function() {
+      this.renderer = new THREE.WebGLRenderer({
+        canvas: document.getElementById("canvas"),
+        antialias: true
+      });
+      this.renderer.setPixelRatio(window.devicePixelRatio);
+      this.renderer.autoClear = false;
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
+      this.scene = new THREE.Scene();
+      this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+      this.camera.position.z = 50;
+      this.stats = new Stats();
+      this.stats.setMode(0);
+      this.stats.domElement.style.position = 'absolute';
+      this.stats.domElement.style.left = '0px';
+      this.stats.domElement.style.top = '0px';
+      document.getElementById("stats").appendChild(this.stats.domElement);
+      window.addEventListener('resize', this.resize, false);
+      window.addEventListener('mousemove', this.mouseMove, false);
+      return window.addEventListener("mousedown", this.mouseDown);
+    };
+
+    Particles.prototype.animate = function() {
+      var i, j, k, l, particle, ref, ref1;
+      for (j = k = 0, ref = this.systemCount - 1; 0 <= ref ? k <= ref : k >= ref; j = 0 <= ref ? ++k : --k) {
+        for (i = l = 0, ref1 = this.particleCount; 0 <= ref1 ? l < ref1 : l > ref1; i = 0 <= ref1 ? ++l : --l) {
+          particle = this.starSystems[j].geometry.vertices[i];
+          particle.x += this.directions[j][i].x;
+          particle.y += this.directions[j][i].y;
+          particle.z += this.directions[j][i].z;
+        }
+        this.starSystems[j].geometry.verticesNeedUpdate = true;
+      }
+      this.stats.update();
+      this.render();
+      return requestAnimationFrame(this.animate);
+    };
+
+    Particles.prototype.resize = function() {
+      this.camera.aspect = window.innerWidth / window.innerHeight;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
+      return this.render();
+    };
+
+    Particles.prototype.mouseDown = function() {
+      this.systemCount++;
+      return this.addStars(this.getPastelColor(), this.canvasMouse.x, this.canvasMouse.y);
+    };
+
+    Particles.prototype.mouseMove = function() {
+      this.canvasMouse.px = this.canvasMouse.x;
+      this.canvasMouse.py = this.canvasMouse.y;
+      this.canvasX = (event.clientX / window.innerWidth) * 2 - 1;
+      this.canvasY = -(event.clientY / window.innerHeight) * 2 + 1;
+      this.vector = new THREE.Vector3(this.canvasX || 0, this.canvasY || 0, 0);
+      this.vector.unproject(this.camera);
+      this.dir = this.vector.sub(this.camera.position).normalize();
+      this.distance = -this.camera.position.z / this.dir.z;
+      return this.canvasMouse = this.camera.position.clone().add(this.dir.multiplyScalar(this.distance));
+    };
+
+    Particles.prototype.random = function(min, max) {
+      return Math.floor(Math.random() * max) + min;
+    };
+
+    Particles.prototype.rotateRadians = function(deg) {
+      return deg * (Math.PI / 180);
+    };
+
+    Particles.prototype.render = function() {
+      return this.renderer.render(this.scene, this.camera);
+    };
+
+    return Particles;
+
+  })();
+
+  new Particles;
+
+}).call(this);
+</script>
+
+<div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+<p>适用浏览器：360、FireFox、Chrome、Opera、傲游、搜狗、世界之窗. 不支持Safari、IE8及以下浏览器。</p>
+<p>来源：<a href="http://down.admin5.com/" target="_blank">A5源码</a></p>
+</div>
+</body>
+</html>

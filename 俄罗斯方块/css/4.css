@@ -1,0 +1,162 @@
+*{
+	box-sizing: border-box;
+	-moz-box-sizing:border-box; /* Firefox */
+	-webkit-box-sizing:border-box; /* Safari */
+	/*元素指定的任何内边距和边框都将在已设定的宽度和高度内进行绘制。*/
+}
+html,body,div{
+	margin:0;
+	padding:0;
+}
+/*游戏区块*/
+.game-container, .start-container{
+	width:590px;
+	height: 600px;
+	/*border:1px solid green;*/
+	margin:50px auto;
+	position: relative;
+	box-sizing: content-box;
+}
+.game-container{
+	display: none;
+}
+/*开始界面*/
+.start-container{
+	background: url(../images/1.jpg);
+	background-size: cover;
+	width: 390px;
+	position: relative;
+    
+}
+.start-container p{
+	position: absolute;
+	bottom: 100px;
+	left:100px;
+}
+.start-container p button{
+	width: 200px;
+	height: 50px;
+	display: block;
+	margin: 0 auto;
+	margin-bottom: 40px;
+	border-radius: 60%;
+	font-family: "微软雅黑";
+	font-weight: bold;
+	font-size:18px;
+}
+.start-container .btn{
+	outline: none; 
+    border: 0px solid transparent;
+}
+/*去掉bootstrap按钮边框*/
+.btn:focus,    
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,.btn.active.focus {
+    outline: none;          
+}
+/*设置区块*/
+.modal-dialog{
+	display: none;
+	/*z-index: 2;*/
+	color:#02490C;
+	font-weight: 400;
+}
+.modal-dialog .modal-body{
+	/*display:none;*/
+	position: fixed;
+    height: 300px;
+    width: 390px;
+    /*top: 50%;*/
+    margin-top: -500px;
+    left: 50%;
+    margin-left: -195px;
+    /*1/2宽度*/
+    background: rgba(255,255,46,0.4);
+    z-index: 100;
+    text-align: center;
+	z-index: 2;
+	line-height: 95px;
+}
+.modal-dialog::after{
+	/*display: none;*/
+	content:'';
+	position:fixed;
+	top:0;
+	right:0;
+	left:0;
+	bottom:0;
+	background: rgba(255,255,255,0.3);
+}
+.game-container .panel{
+	width:100px;
+	margin-bottom: 0;
+	border-bottom: #12E040 1px solid;
+}
+.game-container .panel .panel-body{
+	padding:0;
+}
+
+/*游戏显示区块*/
+.game-main-panel{
+	position: absolute;
+	left:100px;
+	top:0;
+	width:390px;
+	height: 600px;
+	border-left:1px solid green;
+	border-right:1px solid green;
+}
+.game-container canvas {
+    width: 100px;
+}
+.game-main-panel canvas {
+    width: 390px;
+    height:600px;
+}
+
+/*两边面板*/
+.timer-panel{
+	height:100px;
+}
+.help-panel{
+	height: 400px;
+	line-height: 80px;
+	text-align: center;
+}
+.leval-panel{
+	height: 100px;
+}
+.next-panel{
+	position: absolute;
+	top:0;
+	right:0;
+	height: 150px;
+}
+.setting-panel{
+	position: absolute;
+	top:150px;
+	right:0;
+	height:250px;
+	/*调节按钮间距*/
+	line-height: 80px;  
+	text-align: center;
+	font-weight: bold;
+}
+.setting-panel button{
+	color:#fff;
+	font-weight: bold;
+}
+.score-panel{
+	position: absolute;
+	top:400px;
+	right:0;
+	height:100px;
+}
+.high-score-panel{
+	position: absolute;
+	top:500px;
+	right:0;
+	height:100px;
+}

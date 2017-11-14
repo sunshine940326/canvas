@@ -1,0 +1,260 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Canvas粒子线条连接动态背景特效 - A5源码</title>
+<script src="js/jquery.min.js"></script>
+<style>
+@import url("https://fonts.googleapis.com/css?family=Montserrat:200,300,400,600");
+.more-pens {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 10;
+  font-family: "Montserrat";
+  font-size: 12px;
+}
+
+a.white-mode, a.white-mode:link, a.white-mode:visited, a.white-mode:active {
+  font-family: "Montserrat";
+  font-size: 12px;
+  text-decoration: none;
+  background: #212121;
+  padding: 4px 8px;
+  color: #f7f7f7;
+}
+a.white-mode:hover, a.white-mode:link:hover, a.white-mode:visited:hover, a.white-mode:active:hover {
+  background: #edf3f8;
+  color: #212121;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: #000000;
+}
+
+.title {
+  z-index: 10;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  font-family: "Montserrat";
+  text-align: center;
+  width: 100%;
+}
+.title h1 {
+  position: relative;
+  color: #EEEEEE;
+  font-weight: 600;
+  font-size: 60px;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  text-shadow: 0 0 30px #000155;
+}
+.title h1 span {
+  font-weight: 600;
+  padding: 0;
+  margin: 0;
+  color: #BBB;
+}
+.title h3 {
+  font-weight: 200;
+  font-size: 20px;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  color: #EEEEEE;
+  letter-spacing: 2px;
+  text-shadow: 0 0 30px #000155;
+}
+</style>
+</head>
+<body>
+<div class="title">
+    <h3>PLASM.it - 2017</h3>
+    <h1>CONNECTIONS</h1>
+    <h3>适用浏览器：360、FireFox、Chrome、Opera、傲游、搜狗、世界之窗.<br><br>不支持Safari、IE8及以下浏览器。</h3><br>
+	<h3>来源：<a href="http://down.admin5.com/" target="_blank">A5源码</a></h3>
+</div><script>
+let max_particles    = 100;
+let particles        = [];
+let frequency        = 100;
+let init_num         = max_particles;
+let max_time         = frequency*max_particles;
+let time_to_recreate = false;
+
+// Enable repopolate
+setTimeout(function(){
+  time_to_recreate = true;
+}.bind(this), max_time)
+
+// Popolate particles
+popolate(max_particles);
+
+var tela = document.createElement('canvas');
+    tela.width = $(window).width();
+    tela.height = $(window).height();
+    $("body").append(tela);
+
+var canvas = tela.getContext('2d');
+
+class Particle{
+  constructor(canvas, options){
+    let colors = ["#feea00","#a9df85","#5dc0ad", "#ff9a00","#fa3f20"]
+    let types  = ["full","fill","empty"]
+    this.random = Math.random()
+    this.canvas = canvas;
+    this.progress = 0;
+
+    this.x = ($(window).width()/2)  + (Math.random()*200 - Math.random()*200)
+    this.y = ($(window).height()/2) + (Math.random()*200 - Math.random()*200)
+    this.w = $(window).width()
+    this.h = $(window).height()
+    this.radius = 1 + (8*this.random)
+    this.type  = types[this.randomIntFromInterval(0,types.length-1)];
+    this.color = colors[this.randomIntFromInterval(0,colors.length-1)];
+    this.a = 0
+    this.s = (this.radius + (Math.random() * 1))/10;
+    //this.s = 12 //Math.random() * 1;
+  }
+
+  getCoordinates(){
+    return {
+      x: this.x,
+      y: this.y
+    }
+  }
+
+  randomIntFromInterval(min,max){
+      return Math.floor(Math.random()*(max-min+1)+min);
+  }
+
+  render(){
+    // Create arc
+    let lineWidth = 0.2 + (2.8*this.random);
+    let color = this.color;
+    switch(this.type){
+      case "full":
+        this.createArcFill(this.radius, color)
+        this.createArcEmpty(this.radius+lineWidth, lineWidth/2, color)
+      break;
+      case "fill":
+        this.createArcFill(this.radius, color)
+      break;
+      case "empty":
+        this.createArcEmpty(this.radius, lineWidth, color)
+      break;
+    }
+  }
+
+  createArcFill(radius, color){
+    this.canvas.beginPath();
+    this.canvas.arc(this.x, this.y, radius, 0, 2 * Math.PI);
+    this.canvas.fillStyle = color;
+    this.canvas.fill();
+    this.canvas.closePath();
+  }
+
+  createArcEmpty(radius, lineWidth, color){
+    this.canvas.beginPath();
+    this.canvas.arc(this.x, this.y, radius, 0, 2 * Math.PI);
+    this.canvas.lineWidth = lineWidth;
+    this.canvas.strokeStyle = color;
+    this.canvas.stroke();
+    this.canvas.closePath();
+  }
+
+  move(){
+
+    this.x += Math.cos(this.a) * this.s;
+    this.y += Math.sin(this.a) * this.s;
+    this.a += Math.random() * 0.4 - 0.2;
+
+    if(this.x < 0 || this.x > this.w - this.radius){
+      return false
+    }
+
+    if(this.y < 0 || this.y > this.h - this.radius){
+      return false
+    }
+    this.render()
+    return true
+  }
+
+  calculateDistance(v1, v2){
+    let x = Math.abs(v1.x - v2.x);
+    let y = Math.abs(v1.y - v2.y);
+    return Math.sqrt((x * x) + (y * y));
+  }
+}
+
+/*
+ * Function to clear layer canvas
+ * @num:number number of particles
+ */
+function popolate(num){
+  for (var i = 0; i < num; i++) {
+   setTimeout(
+     function(x){
+       return function(){
+         // Add particle
+         particles.push(new Particle(canvas))
+       };
+     }(i)
+     ,frequency*i);
+  }
+  return particles.length
+ }
+
+function clear(){
+  // canvas.globalAlpha=0.04;
+  canvas.fillStyle='#111111';
+  canvas.fillRect(0, 0, tela.width, tela.height);
+  // canvas.globalAlpha=1;
+}
+
+function connection(){
+  let old_element = null
+  $.each(particles, function(i, element){
+    if(i>0){
+      let box1 = old_element.getCoordinates()
+      let box2 = element.getCoordinates()
+      canvas.beginPath();
+      canvas.moveTo(box1.x,box1.y);
+      canvas.lineTo(box2.x,box2.y);
+      canvas.lineWidth = 0.45;
+      canvas.strokeStyle="#3f47ff";
+      canvas.stroke();
+      canvas.closePath();
+    }
+
+    old_element = element
+  })
+}
+
+/*
+ * Function to update particles in canvas
+ */
+function update(){
+  clear();
+  connection()
+  particles = particles.filter(function(p) { return p.move() })
+  // Recreate particles
+  if(time_to_recreate){
+    if(particles.length < init_num){ popolate(1);}
+  }
+  requestAnimationFrame(update.bind(this))
+}
+
+update()
+</script>
+
+</body>
+</html>
+

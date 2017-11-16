@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body{
+            text-align: center;
+        }
+        svg{
+            background:#ddd;
+        }
+    </style>
+</head>
+<body>
+<h1>动态随机绘制SVG圆形</h1>
+<svg id="s9" width="500" height="400"></svg>
+<script>
+    for(var i=0;i<30;i++){
+        var c = document.createElementNS
+        ('http://www.w3.org/2000/svg','circle');
+        c.setAttribute('r',rn(10, 80));
+        c.setAttribute('cx',rn(0, 500));
+        c.setAttribute('cy',rn(0, 400));
+        c.setAttribute('fill',rc(0, 255));
+        c.setAttribute('fill-opacity',Math.random(0, 1));
+        //坑：在定时器启动时，所有圆形都已经绘制好，所以此处c会指向最后一个创建好的圆
+        c.onclick = function(){
+            var that = this;//留存this，解决闭包形成的问题
+
+            //为防止当前圆形再次被点击，应取消其事件监听
+            that.onclick = null;
+
+            //启用定时器，让圆形慢慢变大变淡
+            var t = setInterval(function(){
+                var r = that.getAttribute('r');
+                r *= 1.05;//注意：*=已经自动把字符串变成浮点数
+                that.setAttribute('r',r);
+                var p = that.getAttribute('fill-opacity');
+                p *= 0.9;
+                that.setAttribute('fill-opacity',p);
+                if(p<0.0001){//当前圆形几乎已经看不见，停掉定时器
+                    clearInterval(t);
+                    that.parentNode.removeChild(that);
+                }
+            },30);
+        };
+        s9.appendChild(c);
+
+    }
+
+    //random number：返回指定范围内的随机整数
+    function rn(min,max){
+        var n = Math.floor(Math.random()*(max-min)+min);
+        return n;
+    }
+    //random color：返回指定范围内的随机颜色
+    //形如：rgb(x,x,x)
+    function rc(min, max){
+        var r = rn(min, max);
+        var g = rn(min, max);
+        var b = rn(min, max);
+        return `rgb(${r},${g},${b})`;
+    }
+</script>
+</body>
+</html>

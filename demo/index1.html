@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #canvas {
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas">
+
+</canvas>
+<script>
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+    var cx = canvas.width = window.innerWidth;
+    var cy = canvas.height = window.innerHeight;
+
+    context.beginPath();
+    context.arc(50, 50, 50, 0, Math.PI * 2, true);
+    //不关闭路径路径会一直保留下去
+    context.closePath();
+    context.fillStyle = 'rgba(0,255,0,0.25)';
+    context.fill();
+</script>
+</body>
+</html>

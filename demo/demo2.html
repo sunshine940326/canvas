@@ -8,13 +8,13 @@
             text-align: center;
         }
         svg{
-            background:#d8d8d8;
+            background:#;
         }
     </style>
 </head>
 <body>
 <h1>动态随机绘制SVG圆形</h1>
-<svg id="s9" width="500" height="400"></svg>
+<svg id="s9" width="500" height="500"></svg>
 <script>
     for(var i=0;i<30;i++){
         var c = document.createElementNS
@@ -24,7 +24,7 @@
         c.setAttribute('cy',rn(0, 400));
         c.setAttribute('fill',rc(0, 255));
         c.setAttribute('fill-opacity',Math.random(0, 1));
-        //坑：在定时器启动时，所有圆形都已经绘制好，所以此处c会指向最后一个创建好的圆
+        //坑：在定时器启动时，所有圆形都已经绘制好， 所以此处c会指向最后一个创建好的圆
         c.onclick = function(){
             var that = this;//留存this，解决闭包形成的问题
 

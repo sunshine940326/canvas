@@ -6,6 +6,8 @@
     <style>
         #canvas {
             background: #000;
+            width: 400px;
+            height: 400px;
         }
     </style>
 </head>
@@ -16,11 +18,9 @@
 <script>
     var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
-    var cx = canvas.width = 400;
-    var cy = canvas.height = 400;
 
     context.beginPath();
-    context.arc(100, 100, 1, 0, Math.PI * 2, true);
+    context.arc(100, 100, 50, 0, Math.PI * 2, true);
     context.closePath();
     context.fillStyle = 'rgb(255,255,255)';
     context.fill();

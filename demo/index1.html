@@ -20,10 +20,11 @@
     var cy = canvas.height = 400;
 
     context.beginPath();
-    context.arc(100, 100, 1, 0, Math.PI * 2, true);
-    context.closePath();
-    context.fillStyle = 'rgb(255,255,255)';
-    context.fill();
+    context.arc(100,100,50,0,2*Math.PI,false);
+    context.fillStyle = '#fff';
+    context.shadowBlur = 20;
+    context.shadowColor = '#fff';
+    context.fill()
 </script>
 </body>
 </html>

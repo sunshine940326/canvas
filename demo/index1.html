@@ -16,15 +16,20 @@
 <script>
     var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
-    var context = canvas.width = 400;
-    var context = canvas.height = 400;
+    var cx = canvas.width = 400;
+    var cy = canvas.height = 400;
 
-    context.beginPath();
-    context.arc(100,100,50,0,2*Math.PI,false);
-    context.fillStyle = '#fff';
-    context.shadowBlur = 20;
-    context.shadowColor = '#fff';
-    context.fill()
+    var grd = context.createLinearGradient(0,0,0,400);
+    grd.addColorStop(0,'rgb(255, 0, 0)');
+    grd.addColorStop(0.2,'rgb(255, 165, 0)');
+    grd.addColorStop(0.3,'rgb(255, 255, 0)');
+    grd.addColorStop(0.5,'rgb(0, 255, 0)');
+    grd.addColorStop(0.7,'rgb(0, 127, 255)');
+    grd.addColorStop(0.9,'rgb(0, 0, 255)');
+    grd.addColorStop(1,'rgb(139, 0, 255)');
+
+    context.fillStyle = grd;
+    context.fillRect(0,0,400,400);
 </script>
 </body>
 </html>

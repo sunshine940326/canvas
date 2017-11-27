@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #canvas {
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas">
+
+</canvas>
+<script>
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+    var cx = canvas.width = 400;
+    var cy = canvas.height = 400;
+
+    context.fillStyle = 'white';
+    context.rotate(20*Math.PI/180);
+    context.fillRect(70,30,200,100);
+
+    context.fillRect(170,130,200,100);
+
+
+</script>
+</body>
+</html>

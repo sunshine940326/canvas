@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #canvas{
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas">
+
+</canvas>
+<script>
+    window.addEventListener('load',function () {
+        var canvas = document.getElementById('canvas');
+        var content = canvas.getContext('2d');
+        var cx = canvas.width = document.body.clientWidth;
+        var cy = canvas.height = window.screen.height;
+    })
+</script>
+</body>
+</html>

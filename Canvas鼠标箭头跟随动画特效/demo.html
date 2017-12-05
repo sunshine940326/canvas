@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        #canvas {
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+    var canvas = document.getElementById('canvas'),
+        ctx = canvas.getContext('2d'),
+        WIDTH = canvas.width = document.documentElement.clientWidth,
+        HEIGHT = canvas.height = document.documentElement.clientHeight,
+        para = {
+            num: 100,
+            color: false,    //  颜色  如果是false 则是随机渐变颜色
+            bgc: '#000',   //  背景颜色
+            r: 0.9,
+            o: 0.05,
+            a: 1,
+            s: 20
+        },
+        color,
+        color2;
+
+    if (para.color) {
+        color2 = para.color;
+    } else {
+        color = Math.random() * 360;
+    }
+
+
+    function begin() {
+        if (!para.color) {
+            color += .1;
+            color2 = 'hsl(' + color + ',100%,80%)';
+        }
+
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = para.color;
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+    }
+
+    begin();
+</script>
+</body>
+</html>

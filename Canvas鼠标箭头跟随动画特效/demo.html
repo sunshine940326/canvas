@@ -31,7 +31,8 @@
             s: 20
         },
         color,
-        color2;
+        color2,
+        ;
 
     if (para.color) {
         color2 = para.color;
@@ -51,6 +52,13 @@
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
     }
+
+    window.onmousemove = function (event) {
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+
+    }
+
 
     begin();
 </script>

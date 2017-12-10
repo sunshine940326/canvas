@@ -13,54 +13,89 @@
             background: #000;
         }
     </style>
+    <script src="js/jquery.min.js"></script>
 </head>
 <body>
 <canvas id="canvas"></canvas>
 <script>
-    var canvas = document.getElementById('canvas'),
-        ctx = canvas.getContext('2d'),
-        WIDTH = canvas.width = document.documentElement.clientWidth,
-        HEIGHT = canvas.height = document.documentElement.clientHeight,
-        para = {
-            num: 100,
-            color: false,    //  颜色  如果是false 则是随机渐变颜色
-            bgc: '#000',   //  背景颜色
-            r: 0.9,
-            o: 0.05,
-            a: 1,
-            s: 20
-        },
-        color,
-        color2,
-        ;
+    $(document).ready(function () {
 
-    if (para.color) {
-        color2 = para.color;
-    } else {
-        color = Math.random() * 360;
-    }
+        var canvas = document.getElementById('canvas'),
+            ctx = canvas.getContext('2d'),
+            WIDTH = canvas.width = document.documentElement.clientWidth,
+            HEIGHT = canvas.height = document.documentElement.clientHeight,
+            para = {
+                num: 100,
+                color: false,    //  颜色  如果是false 则是随机渐变颜色
+                bgc: '#000',   //  背景颜色
+                r: 0.9,
+                o: 0.05,
+                a: 1,
+                s: 20
+            },
+            color,
+            color2,
+            rount_num = [],
+            mouseMoving,
+            mouseMoveChecker;
 
-
-    function begin() {
-        if (!para.color) {
-            color += .1;
-            color2 = 'hsl(' + color + ',100%,80%)';
+        if (para.color) {
+            color2 = para.color;
+        } else {
+            color = Math.random() * 360;
         }
 
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = para.color;
-        ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-    }
-
-    window.onmousemove = function (event) {
-        mouseX = event.clientX;
-        mouseY = event.clientY;
-
-    }
 
 
-    begin();
+        window.onmousemove = function (event) {
+            mouseMoving = true;
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+            drawIfMouseMoving();
+            rount_num.push({
+                mouseX: mouseX,
+                mouseY: mouseY,
+                r: para.r,
+                o: 1,
+                v: 0
+
+            })
+        };
+
+        function drawIfMouseMoving() {
+
+            console.log(mouseMoving)
+            if (!mouseMoving) return;
+
+            if (!para.color) {
+
+                color += .1;
+
+                color2 = 'hsl(' + color + ',100%,80%)';
+
+            }
+            ctx.globalAlpha = 1;
+
+            for (var i = 0; i < rount_num.length; i++) {
+                ctx.globalAlpha = 1;
+                ctx.fillStyle = color2;
+                ctx.beginPath();
+                ctx.arc( rount_num[i].mouseX ,rount_num[i].mouseY,rount_num[i].r,0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+                rount_num[i].r += para.r;
+                rount_num[i].o -= para.o;
+                if( rount_num.o <= 0){
+                    rount_num.splice(i,1);
+                    i --;
+                }
+
+            }
+
+        }
+
+    })
+
 </script>
 </body>
 </html>

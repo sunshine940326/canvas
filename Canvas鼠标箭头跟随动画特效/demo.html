@@ -13,12 +13,11 @@
             background: #000;
         }
     </style>
-    <script src="js/jquery.min.js"></script>
 </head>
 <body>
 <canvas id="canvas"></canvas>
 <script>
-    $(document).ready(function () {
+
 
         var canvas = document.getElementById('canvas'),
             ctx = canvas.getContext('2d'),
@@ -27,17 +26,15 @@
             para = {
                 num: 100,
                 color: false,    //  颜色  如果是false 则是随机渐变颜色
-                bgc: '#000',   //  背景颜色
                 r: 0.9,
-                o: 0.05,
+                o: 0.09,
                 a: 1,
                 s: 20
             },
             color,
             color2,
-            rount_num = [],
-            mouseMoving,
-            mouseMoveChecker;
+            round_arr = [];
+
 
         if (para.color) {
             color2 = para.color;
@@ -46,56 +43,52 @@
         }
 
 
-
         window.onmousemove = function (event) {
-            mouseMoving = true;
+
             mouseX = event.clientX;
             mouseY = event.clientY;
-            drawIfMouseMoving();
-            rount_num.push({
+
+            round_arr.push({
                 mouseX: mouseX,
                 mouseY: mouseY,
                 r: para.r,
                 o: 1,
                 v: 0
-
             })
         };
 
         function drawIfMouseMoving() {
 
-            console.log(mouseMoving)
-            if (!mouseMoving) return;
-
             if (!para.color) {
-
                 color += .1;
-
                 color2 = 'hsl(' + color + ',100%,80%)';
-
             }
-            ctx.globalAlpha = 1;
 
-            for (var i = 0; i < rount_num.length; i++) {
-                ctx.globalAlpha = 1;
+
+            ctx.clearRect(0, 0, WIDTH, HEIGHT);
+            ctx.fillStyle = para.bgc;
+            ctx.fillRect(0,0,WIDTH,HEIGHT);
+            
+            for (var i = 0; i < round_arr.length; i++) {
+
                 ctx.fillStyle = color2;
                 ctx.beginPath();
-                ctx.arc( rount_num[i].mouseX ,rount_num[i].mouseY,rount_num[i].r,0, Math.PI * 2);
+                ctx.arc( round_arr[i].mouseX ,round_arr[i].mouseY,round_arr[i].r,0, Math.PI * 2);
                 ctx.closePath();
                 ctx.fill();
-                rount_num[i].r += para.r;
-                rount_num[i].o -= para.o;
-                if( rount_num.o <= 0){
-                    rount_num.splice(i,1);
-                    i --;
-                }
+                round_arr[i].r += para.r;
+                round_arr[i].o -= para.o;
 
+                if( round_arr[i].o <= 0){
+                    round_arr.splice(i,1);
+                    i--;
+                }
             }
 
-        }
+            window.requestAnimationFrame(drawIfMouseMoving);
+        };
 
-    })
-
+        drawIfMouseMoving();
 </script>
 </body>
 </html>

@@ -27,20 +27,16 @@
                 num: 100,
                 color: false,    //  颜色  如果是false 则是随机渐变颜色
                 r: 0.9,
-                o: 0.09,
+                o: 0.09,         //  判断圆消失的条件，数值越大，消失的越快
                 a: 1,
-                s: 20
+
             },
             color,
             color2,
             round_arr = [];
 
 
-        if (para.color) {
-            color2 = para.color;
-        } else {
-            color = Math.random() * 360;
-        }
+
 
 
         window.onmousemove = function (event) {
@@ -52,23 +48,28 @@
                 mouseX: mouseX,
                 mouseY: mouseY,
                 r: para.r,
-                o: 1,
-                v: 0
+                o: 1
             })
         };
 
-        function drawIfMouseMoving() {
+
+        // 判断参数中是否设置了 color，如果设置了 color，就使用该值、
+        // 如果参数中的 color 为 false，那么就使用随机的颜色
+        if (para.color) {
+            color2 = para.color;
+        } else {
+            color = Math.random() * 360;
+        }
+
+        function animate() {
 
             if (!para.color) {
                 color += .1;
                 color2 = 'hsl(' + color + ',100%,80%)';
             }
 
-
             ctx.clearRect(0, 0, WIDTH, HEIGHT);
-            ctx.fillStyle = para.bgc;
-            ctx.fillRect(0,0,WIDTH,HEIGHT);
-            
+
             for (var i = 0; i < round_arr.length; i++) {
 
                 ctx.fillStyle = color2;
@@ -85,10 +86,10 @@
                 }
             }
 
-            window.requestAnimationFrame(drawIfMouseMoving);
-        }
+            window.requestAnimationFrame(animate);
+        };
 
-        drawIfMouseMoving();
+        animate();
 </script>
 </body>
 </html>

@@ -23,7 +23,9 @@
         round = [],
         WIDTH,
         HEIGHT,
-        initRoundPopulation = 80;
+        initRoundPopulation = 80,
+        useChache = true;
+
 
 
     WIDTH = document.documentElement.clientWidth;
@@ -36,20 +38,47 @@
         this.index = index;
         this.x = x;
         this.y = y;
+        this.useCache = useChache;
+        this.cacheCanvas = document.createElement("canvas");
+        this.cacheCtx = this.cacheCanvas.getContext("2d");
+
+        this.cacheCtx.width = 6 * this.r;
+        this.cacheCtx.height = 6 * this.r;
         this.r = Math.random() * 2 + 1;
         var alpha = (Math.floor(Math.random() * 10) + 1) / 10 / 2;
         this.color = "rgba(255,255,255," + alpha + ")";
+
+        if(useChache){
+            this.cache();
+        }
     }
 
     Round_item.prototype.draw = function () {
-        content.fillStyle = this.color;
-        content.shadowBlur = this.r * 2;
-        content.beginPath();
-        content.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
-        content.closePath();
-        content.fill();
+
+        if( !useChache){
+            content.fillStyle = this.color;
+            content.shadowBlur = this.r * 2;
+            content.beginPath();
+            content.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
+            content.closePath();
+            content.fill();
+        }else{
+            content.drawImage(this.cacheCanvas, this.x - this.r, this.y - this.r);
+        }
+
     };
 
+    Round_item.prototype.cache = function () {
+        this.cacheCtx.save();
+        this.cacheCtx.fillStyle = this.color;
+        this.cacheCtx.shadowColor = "white";
+        this.cacheCtx.shadowBlur = this.r * 2;
+        this.cacheCtx.beginPath();
+        this.cacheCtx.arc(this.r * 3, this.r * 3, this.r, 0, 2 * Math.PI);
+        this.cacheCtx.closePath();
+        this.cacheCtx.fill();
+        this.cacheCtx.restore();
+    };
     function animate() {
         content.clearRect(0, 0, WIDTH, HEIGHT);
 
